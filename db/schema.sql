@@ -73,33 +73,39 @@ CREATE TABLE notifications (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE leads (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    agent_id INT,
-    property_id INT,
-    buyer_id INT,
-    status ENUM(
-        'new',
-        'contacted',
-        'interested',
-        'closed',
-        'lost'
-    ),
-    last_contacted DATE,
+CREATE TABLE analytics (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    property_id INT NOT NULL,
+    user_id INT,
+    type ENUM('view', 'inquiry', 'share') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (agent_id) REFERENCES users(id),
-    FOREIGN KEY (property_id) REFERENCES properties(id),
-    FOREIGN KEY (buyer_id) REFERENCES users(id)
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-CREATE TABLE analytics (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    property_id INT,
-    views INT DEFAULT 0,
-    inquiries INT DEFAULT 0,
-    conversion_rate DECIMAL(5, 2) DEFAULT 0.0,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (property_id) REFERENCES properties(id)
+CREATE TABLE leads (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    property_id INT NOT NULL,
+    agent_id INT NOT NULL,
+    buyer_id INT NOT NULL,
+    status ENUM('new', 'contacted', 'interested', 'closed', 'lost') DEFAULT 'new',
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+    FOREIGN KEY (agent_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (buyer_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE interactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    lead_id INT NOT NULL,
+    type ENUM('contacted', 'interested', 'closed', 'lost') NOT NULL,
+    notes TEXT,
+    created_by INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE reports (
