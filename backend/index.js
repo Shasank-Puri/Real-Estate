@@ -6,6 +6,7 @@ const propertyRoutes = require('./routes/propertyRoutes');
 const propertyMediaRoutes = require('./routes/propertyMediaRoutes');
 const mapRoutes = require('./routes/mapRoutes');
 const marketingRoutes = require('./routes/marketingRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use('/api/properties', propertyRoutes);
 app.use('/api/property-media', propertyMediaRoutes);
 app.use('/api/maps', mapRoutes);
 app.use('/api/marketing', marketingRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
