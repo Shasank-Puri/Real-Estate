@@ -70,6 +70,7 @@ CREATE TABLE notifications (
     ),
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    scheduled_for TIMESTAMP NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -115,4 +116,13 @@ CREATE TABLE reports (
     generated_by INT,
     generated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (generated_by) REFERENCES users(id)
+);
+
+CREATE TABLE preferences (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    notification_preferences JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
