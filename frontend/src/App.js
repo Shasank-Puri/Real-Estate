@@ -9,6 +9,10 @@ import AgentDashboard from './components/agent/AgentDashboard';
 import SellerDashboard from './components/seller/SellerDashboard';
 import BuyerDashboard from './components/buyer/BuyerDashboard';
 import Unauthorized from './components/common/Unauthorized';
+import PropertyForm from './components/property/PropertyForm';
+import PropertyList from './components/property/PropertyList';
+import LeadDetails from './components/leads/LeadDetails';
+import MarketingDashboard from './components/marketing/MarketingDashboard';
 
 function App() {
     return (
@@ -25,7 +29,7 @@ function App() {
                     <Route
                         path="/admin/*"
                         element={
-                            <PrivateRoute allowedRoles={['admin']}>
+                            <PrivateRoute role="admin">
                                 <AdminDashboard />
                             </PrivateRoute>
                         }
@@ -33,7 +37,7 @@ function App() {
                     <Route
                         path="/agent/*"
                         element={
-                            <PrivateRoute allowedRoles={['agent']}>
+                            <PrivateRoute role="agent">
                                 <AgentDashboard />
                             </PrivateRoute>
                         }
@@ -41,7 +45,7 @@ function App() {
                     <Route
                         path="/seller/*"
                         element={
-                            <PrivateRoute allowedRoles={['seller']}>
+                            <PrivateRoute role="seller">
                                 <SellerDashboard />
                             </PrivateRoute>
                         }
@@ -49,17 +53,59 @@ function App() {
                     <Route
                         path="/buyer/*"
                         element={
-                            <PrivateRoute allowedRoles={['buyer']}>
+                            <PrivateRoute role="buyer">
                                 <BuyerDashboard />
                             </PrivateRoute>
                         }
                     />
 
-                    {/* Default Route */}
+                    {/* Marketing & Analytics Routes */}
+                    <Route
+                        path="/marketing"
+                        element={
+                            <PrivateRoute roles={['agent', 'seller']}>
+                                <MarketingDashboard />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Property Routes */}
+                    <Route
+                        path="/listings"
+                        element={<PropertyList />}
+                    />
+                    <Route
+                        path="/listings/new"
+                        element={
+                            <PrivateRoute roles={['agent', 'seller']}>
+                                <PropertyForm />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/listings/:id/edit"
+                        element={
+                            <PrivateRoute roles={['agent', 'seller']}>
+                                <PropertyForm />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Lead Management Routes */}
+                    <Route
+                        path="/leads/:id"
+                        element={
+                            <PrivateRoute roles={['agent', 'seller']}>
+                                <LeadDetails />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    {/* Redirect to appropriate dashboard based on role */}
                     <Route
                         path="/"
                         element={
-                            <PrivateRoute>
+                            <PrivateRoute roles={['admin', 'agent', 'seller', 'buyer']}>
                                 <div className="min-h-screen flex items-center justify-center">
                                     <h1 className="text-2xl font-bold">Welcome to Find Homes</h1>
                                 </div>
